@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>  
+<html>
+<head>
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+
+</style>
+</head>
+<body>
+<div class="col-lg-12">
+<form class="form-inline" action="/restv1/index.php">
+  Currency :<input type="text" name="currency" value="INR"><br>
+  Sub Total :<input type="text" name="subtotal" value="30.00"><br>
+  Shipping :<input type="text" name="shipping" value="0.03"><br>
+  Handling Fee :<input type="text" name="handling" value="1.00"><br>
+  Shipping Discount :<input type="text" name="shipping_discount" value="-1.00"><br>
+  Insurance :<input type="text" name="insurance" value="0.01"><br>
+  Tax :<input type="text" name="tax" value="0.07"><br>
+ 
+  
+    <input type="submit" value="Submit">
+</form> 
+</div>
+
+
+
+
+<div id="paypal-button"></div>
+
+<script>
+  paypal.Button.render({
+    env: 'production', // Or 'production'
+    // Set up the payment:
+    // 1. Add a payment callback
+    payment: function(data, actions) {
+      // 2. Make a request to your server
+      return actions.request.post('/restv1/crete.php')
+        .then(function(res) {
+          // 3. Return res.id from the response
+          return res.paymentID;
+        });
+    },
+    // Execute the payment:
+    // 1. Add an onAuthorize callback
+    onAuthorize: function(data, actions) {
+      // 2. Make a request to your server
+      return actions.request.post('/restv1/execute-payment/', {
+        paymentID: data.paymentID,
+        payerID:   data.payerID
+      })
+        .then(function(res) {
+          // 3. Show the buyer a confirmation message.
+        });
+    }
+  }, '#paypal-button');
+</script>
+</body>
+</html>
+</body>

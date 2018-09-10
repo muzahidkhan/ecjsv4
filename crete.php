@@ -1,0 +1,2 @@
+<?php
+echo '{"paymentID":"PAYID-LOLEIJI0HG58147CE8943838"}';
