@@ -89,7 +89,7 @@ if ($err) {
 //create the payload
 $soft_descriptor="My Ventures";
 $intent="sale";
-$currency="USD";
+$currency="INR";
 $shipping="0.03";
 $handling_fee="1.00";
 $shipping_discount="-1.00";

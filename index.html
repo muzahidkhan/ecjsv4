@@ -14,7 +14,7 @@
 <body>
 <div class="col-lg-12">
 <form class="form-inline" action="/restv1/index.php">
-  Currency :<input type="text" name="currency" value="INR"><br>
+  Currency :<input type="text" name="currency" value="USD"><br>
   Sub Total :<input type="text" name="subtotal" value="30.00"><br>
   Shipping :<input type="text" name="shipping" value="0.03"><br>
   Handling Fee :<input type="text" name="handling" value="1.00"><br>
@@ -28,37 +28,56 @@
 </div>
 
 
-
-
-<div id="paypal-button"></div>
+<div id="paypal-button-container"></div>
 
 <script>
-  paypal.Button.render({
-    env: 'production', // Or 'production'
-    // Set up the payment:
-    // 1. Add a payment callback
-    payment: function(data, actions) {
-      // 2. Make a request to your server
-      return actions.request.post('/restv1/crete.php')
-        .then(function(res) {
-          // 3. Return res.id from the response
-          return res.paymentID;
-        });
-    },
-    // Execute the payment:
-    // 1. Add an onAuthorize callback
-    onAuthorize: function(data, actions) {
-      // 2. Make a request to your server
-      return actions.request.post('/restv1/execute-payment/', {
-        paymentID: data.paymentID,
-        payerID:   data.payerID
-      })
-        .then(function(res) {
-          // 3. Show the buyer a confirmation message.
-        });
-    }
-  }, '#paypal-button');
+    paypal.Button.render({
+
+        env: 'sandbox', // sandbox | production
+
+        // Show the buyer a 'Pay Now' button in the checkout flow
+        commit: true,
+
+        // payment() is called when the button is clicked
+        payment: function() {
+
+            // Set up a url on your server to create the payment
+            var CREATE_URL = 'http://192.168.64.2/restv1/index.php';
+
+            // Make a call to your server to set up the payment
+            return paypal.request.post(CREATE_URL)
+                .then(function(res) {
+                    return res.paymentID;
+                });
+        },
+
+        // onAuthorize() is called when the buyer approves the payment
+        onAuthorize: function(data, actions) {
+
+            // Set up a url on your server to execute the payment
+            var EXECUTE_URL = 'http://192.168.64.2/restv1/execute_payment.php';
+
+            // Set up the data you need to pass to your server
+            var data = {
+                paymentID: data.paymentID,
+                payerID: data.payerID
+            };
+
+            // Make a call to your server to execute the payment
+            return paypal.request.post(EXECUTE_URL, data)
+                .then(function (res) {
+                  
+                    if(res.state=="approved")
+                    {
+                       document.getElementById("result").innerHTML = JSON.stringify(res);  
+                    }
+                });
+        }
+
+    }, '#paypal-button-container');
 </script>
+
+<p id="result"></p>
 </body>
 </html>
 </body>

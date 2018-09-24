@@ -1,14 +1,3 @@
-<!DOCTYPE HTML>  
-<html>
-<head>
-<style>
-.error {color: #FF0000;}
-</style>
-</head>
-<body>
-
-
-
 <?php
 session_start();
 
@@ -55,9 +44,9 @@ $invoice_id = gen_id();
 // $subtotal="30.00";
 $total=$subtotal + $tax + $shipping + $handling_fee + $shipping_discount + $insurance;
 
-echo "Currency is : ".$currency."<BR>";
-echo "Sub Total=".$subtotal."<BR>";
-echo "Total=".$total."<BR><BR><BR><BR><BR><BR>";
+//echo "Currency is : ".$currency."<BR>";
+//echo "Sub Total=".$subtotal."<BR>";
+//echo "Total=".$total."<BR><BR><BR><BR><BR><BR>";
 
 $pay_load="{
     transactions: [{
